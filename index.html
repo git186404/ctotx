@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenCode - 开源 AI 编程助手</title>
+    <meta name="description" content="OpenCode 是一个开源的 AI 编程助手，支持多种 AI 模型，提供强大的终端开发体验。">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1d4ed8;
+            --text-color: #1f2937;
+            --bg-color: #ffffff;
+            --code-bg: #f3f4f6;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background: var(--bg-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .hero p {
+            font-size: 20px;
+            color: #6b7280;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .features {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 50px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.1);
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+
+        .feature-card p {
+            color: #6b7280;
+        }
+
+        .installation {
+            padding: 80px 0;
+            background: var(--code-bg);
+        }
+
+        .install-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .install-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .install-card h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .install-card .badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            background: #dbeafe;
+            color: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        code {
+            background: var(--code-bg);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', monospace;
+            font-size: 14px;
+        }
+
+        pre {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        .agents {
+            padding: 80px 0;
+        }
+
+        .agent-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .agent-card {
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+        }
+
+        .agent-card.build {
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .agent-card.plan {
+            border-left: 4px solid #10b981;
+        }
+
+        .agent-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+
+        .agent-card.build h3 {
+            color: var(--primary-color);
+        }
+
+        .agent-card.plan h3 {
+            color: #10b981;
+        }
+
+        .agent-card ul {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .agent-card li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .agent-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+
+        .desktop-app {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+            color: white;
+        }
+
+        .desktop-app .section-title {
+            color: white;
+        }
+
+        .desktop-app p {
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .download-table {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+            border-collapse: collapse;
+        }
+
+        .download-table th,
+        .download-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .download-table th {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .faq {
+            padding: 80px 0;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 20px;
+            background: var(--bg-color);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question::after {
+            content: "+";
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s;
+            background: var(--code-bg);
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question::after {
+            content: "-";
+        }
+
+        .comparison {
+            padding: 80px 0;
+            background: var(--code-bg);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table tr:hover {
+            background: var(--code-bg);
+        }
+
+        .check {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #1f2937;
+            color: white;
+            padding: 60px 0 30px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 30px;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .install-methods {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="#" class="logo">⚡ OpenCode</a>
+                <ul class="nav-links">
+                    <li><a href="#features">特性</a></li>
+                    <li><a href="#installation">安装</a></li>
+                    <li><a href="#agents">代理</a></li>
+                    <li><a href="#desktop">桌面应用</a></li>
+                    <li><a href="#faq">常见问题</a></li>
+                    <li><a href="https://opencode.ai/docs" target="_blank">文档</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>开源 AI 编程助手</h1>
+            <p>OpenCode 是一个功能强大的开源 AI 编程代理，支持多种 AI 模型，提供原生的 LSP 支持和卓越的终端开发体验。</p>
+            <div>
+                <a href="#installation" class="btn">快速安装</a>
+                <a href="https://github.com/sst/opencode" target="_blank" class="btn btn-outline">GitHub</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">为什么选择 OpenCode？</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>🔓 100% 开源</h3>
+                    <p>完全开源透明，你可以查看、修改和分发代码，不受任何专有限制。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🔧 模型无关</h3>
+                    <p>不与任何提供商绑定，支持 Claude、OpenAI、Google 或本地模型，自由选择。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>📝 原生 LSP 支持</h3>
+                    <p>开箱即用的语言服务器协议支持，提供智能代码补全和导航。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🖥️ 专注终端体验</h3>
+                    <p>由 Neovim 用户和 terminal.shop 创建者打造，极致的终端开发体验。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🏗️ 客户端/服务器架构</h3>
+                    <p>允许在电脑上运行 OpenCode，通过移动应用远程控制，前端只是客户端之一。</p>
+                </div>
+                <div class="feature-card">
+                    <h3>🤖 智能代理</h3>
+                    <p>内置多个专业代理，build 代理处理开发任务，plan 代理用于代码分析和规划。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="installation" id="installation">
+        <div class="container">
+            <h2 class="section-title">安装指南</h2>
+            <p style="text-align: center; color: #6b7280;">支持多种安装方式，选择最适合你的方法</p>
+            
+            <div class="install-methods">
+                <div class="install-card">
+                    <h4>🚀 YOLO 安装 <span class="badge">推荐</span></h4>
+                    <p>一键安装脚本，最快捷的方式</p>
+                    <pre><code>curl -fsSL https://opencode.ai/install | bash</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>📦 npm / bun / pnpm / yarn</h4>
+                    <p>通过包管理器全局安装</p>
+                    <pre><code>npm i -g opencode-ai@latest</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>🍺 Homebrew</h4>
+                    <p>macOS 和 Linux 用户</p>
+                    <pre><code>brew install opencode</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>🎃 Scoop</h4>
+                    <p>Windows 用户</p>
+                    <pre><code>scoop bucket add extras
+scoop install extras/opencode</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>🍫 Chocolatey</h4>
+                    <p>Windows 用户</p>
+                    <pre><code>choco install opencode</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>🦊 Arch Linux</h4>
+                    <p>使用 AUR</p>
+                    <pre><code>paru -S opencode-bin</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>🔧 mise</h4>
+                    <p>跨平台版本管理</p>
+                    <pre><code>mise use -g github:sst/opencode</code></pre>
+                </div>
+
+                <div class="install-card">
+                    <h4>❄️ Nix</h4>
+                    <p>Nix 用户</p>
+                    <pre><code>nix run nixpkgs#opencode</code></pre>
+                </div>
+            </div>
+
+            <div class="install-card" style="margin-top: 30px;">
+                <h4>⚙️ 自定义安装路径</h4>
+                <p>安装脚本支持自定义安装路径，按以下优先级选择：</p>
+                <pre><code># 方式 1: OPENCODE_INSTALL_DIR
+OPENCODE_INSTALL_DIR=/usr/local/bin curl -fsSL https://opencode.ai/install | bash
+
+# 方式 2: XDG_BIN_DIR
+XDG_BIN_DIR=$HOME/.local/bin curl -fsSL https://opencode.ai/install | bash</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="agents" id="agents">
+        <div class="container">
+            <h2 class="section-title">智能代理</h2>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 40px;">OpenCode 内置两个核心代理，使用 <kbd>Tab</kbd> 键切换</p>
+            
+            <div class="agent-cards">
+                <div class="agent-card build">
+                    <h3>🔨 build 代理</h3>
+                    <p>默认代理，拥有完整开发权限</p>
+                    <ul>
+                        <li>完整的文件读写权限</li>
+                        <li>可执行任意终端命令</li>
+                        <li>适合日常开发工作</li>
+                        <li>智能代码生成和重构</li>
+                    </ul>
+                </div>
+
+                <div class="agent-card plan">
+                    <h3>📋 plan 代理</h3>
+                    <p>只读代理，适合代码分析和规划</p>
+                    <ul>
+                        <li>默认拒绝文件编辑</li>
+                        <li>运行命令前会询问确认</li>
+                        <li>适合探索不熟悉的代码库</li>
+                        <li>安全的代码分析工具</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="install-card" style="margin-top: 30px;">
+                <h4>🔍 general 子代理</h4>
+                <p>用于复杂搜索和多步骤任务，内部使用，可在消息中使用 <code>@general</code> 调用</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="desktop-app" id="desktop">
+        <div class="container">
+            <h2 class="section-title">桌面应用 (Beta)</h2>
+            <p>OpenCode 也提供桌面应用程序，下载后即可使用</p>
+            
+            <a href="https://opencode.ai/download" class="btn">下载桌面应用</a>
+            <a href="https://github.com/sst/opencode/releases" target="_blank" class="btn btn-outline" style="border-color: white; color: white;">查看所有版本</a>
+
+            <table class="download-table">
+                <thead>
+                    <tr>
+                        <th>平台</th>
+                        <th>下载文件</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>🍎 macOS (Apple Silicon)</td>
+                        <td><code>opencode-desktop-darwin-aarch64.dmg</code></td>
+                    </tr>
+                    <tr>
+                        <td>🍎 macOS (Intel)</td>
+                        <td><code>opencode-desktop-darwin-x64.dmg</code></td>
+                    </tr>
+                    <tr>
+                        <td>🪟 Windows</td>
+                        <td><code>opencode-desktop-windows-x64.exe</code></td>
+                    </tr>
+                    <tr>
+                        <td>🐧 Linux</td>
+                        <td><code>.deb</code>, <code>.rpm</code>, 或 AppImage</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="install-card" style="margin-top: 30px; background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1);">
+                <h4 style="color: white;">🍺 macOS Homebrew 安装</h4>
+                <pre><code style="background: rgba(255,255,255,0.1);">brew install --cask opencode-desktop</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison">
+        <div class="container">
+            <h2 class="section-title">与 Claude Code 的对比</h2>
+            <p style="text-align: center; color: #6b7280; margin-bottom: 30px;">以下是 OpenCode 与 Claude Code 的主要区别</p>
+            
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>特性</th>
+                        <th>OpenCode</th>
+                        <th>Claude Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>开源</td>
+                        <td class="check">✓ 100%</td>
+                        <td>✗ 专有</td>
+                    </tr>
+                    <tr>
+                        <td>模型提供商</td>
+                        <td class="check">✓ 任意选择</td>
+                        <td>仅 Claude</td>
+                    </tr>
+                    <tr>
+                        <td>原生 LSP 支持</td>
+                        <td class="check">✓ 开箱即用</td>
+                        <td>有限</td>
+                    </tr>
+                    <tr>
+                        <td>终端体验</td>
+                        <td class="check">✓ 专为终端打造</td>
+                        <td>一般</td>
+                    </tr>
+                    <tr>
+                        <td>客户端/服务器架构</td>
+                        <td class="check">✓ 支持远程控制</td>
+                        <td>✗</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">常见问题</h2>
+            
+            <div class="faq-item">
+                <div class="faq-question">OpenCode 和那个重名的仓库有什么关系？</div>
+                <div class="faq-answer">
+                    <p>没有任何关系！那个仓库是另一个项目，只是名称巧合相同。如果你好奇这个故事的来龙去脉，可以<a href="https://x.com/thdxr/status/1933561254481666466" target="_blank" style="color: var(--primary-color);">在这里阅读</a>。</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">安装前需要做什么准备吗？</div>
+                <div class="faq-answer">
+                    <p>如果你之前安装了 0.1.x 之前的版本，建议先卸载旧版本再安装新版本。对于新用户，直接使用上述安装命令即可。</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">如何配置 OpenCode？</div>
+                <div class="faq-answer">
+                    <p>OpenCode 支持多种配置方式，包括环境变量和配置文件。详细的配置说明请查看<a href="https://opencode.ai/docs" target="_blank" style="color: var(--primary-color);">官方文档</a>。</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <div class="faq-question">支持本地模型吗？</div>
+                <div class="faq-answer">
+                    <p>是的！OpenCode 设计为模型无关，不仅支持各大云服务商的 API，还可以通过配置使用本地运行的模型，如 Ollama、LM Studio 等。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>📚 资源</h4>
+                    <ul>
+                        <li><a href="https://opencode.ai/docs" target="_blank">官方文档</a></li>
+                        <li><a href="https://github.com/sst/opencode" target="_blank">GitHub 仓库</a></li>
+                        <li><a href="https://github.com/sst/opencode/releases" target="_blank">版本下载</a></li>
+                        <li><a href="./CONTRIBUTING.md">贡献指南</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>💬 社区</h4>
+                    <ul>
+                        <li><a href="https://discord.gg/opencode" target="_blank">Discord</a></li>
+                        <li><a href="https://x.com/opencode" target="_blank">X (Twitter)</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>⚖️ 法律</h4>
+                    <ul>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">使用条款</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 OpenCode. 基于 <a href="https://github.com/sst/opencode" target="_blank" style="color: var(--primary-color);">sst/opencode</a> 的开源项目创建的中文网站。</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ 交互
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentElement;
+                item.classList.toggle('active');
+            });
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
